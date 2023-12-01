@@ -50,6 +50,10 @@ default_timer_id = 0
 if usys.platform == 'pyboard':
     # stm32 only supports SW timer -1
     default_timer_id = -1
+
+if usys.platform == 'renesas-ra':
+    # renesas only supports SW timer -1
+    default_timer_id = -1
     
 if usys.platform == 'rp2':
     # rp2 only supports SW timer -1

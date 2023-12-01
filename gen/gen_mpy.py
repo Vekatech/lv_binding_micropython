@@ -764,7 +764,7 @@ GENMPY_UNUSED STATIC MP_DEFINE_CONST_OBJ_TYPE(
     MP_QSTR_function,
     MP_TYPE_FLAG_BINDS_SELF | MP_TYPE_FLAG_BUILTIN_FUN,
     call, lv_fun_builtin_var_call,
-    unary_op, mp_generic_unary_op,
+    //unary_op, mp_generic_unary_op,
     buffer, mp_func_get_buffer
 );
 
@@ -773,7 +773,7 @@ GENMPY_UNUSED STATIC MP_DEFINE_CONST_OBJ_TYPE(
     MP_QSTR_function,
     MP_TYPE_FLAG_BUILTIN_FUN,
     call, lv_fun_builtin_var_call,
-    unary_op, mp_generic_unary_op,
+    //unary_op, mp_generic_unary_op,
     buffer, mp_func_get_buffer
 );
 
@@ -908,16 +908,16 @@ STATIC inline LV_OBJ_T *mp_get_callbacks(mp_obj_t mp_obj)
 
 STATIC inline const mp_obj_type_t *get_BaseObj_type();
 
-STATIC void mp_lv_delete_cb(lv_event_t * e)
-{
-    LV_OBJ_T *lv_obj = e->current_target;
-    if (lv_obj){
-        mp_lv_obj_t *self = lv_obj->user_data;
-        if (self) {
-            self->lv_obj = NULL;
-        }
-    }
-}
+//STATIC void mp_lv_delete_cb(lv_event_t * e)
+//{
+//    LV_OBJ_T *lv_obj = e->current_target;
+//    if (lv_obj){
+//        mp_lv_obj_t *self = lv_obj->user_data;
+//        if (self) {
+//            self->lv_obj = NULL;
+//        }
+//    }
+//}
 
 STATIC inline mp_obj_t lv_to_mp(LV_OBJ_T *lv_obj)
 {
@@ -948,7 +948,7 @@ STATIC inline mp_obj_t lv_to_mp(LV_OBJ_T *lv_obj)
         lv_obj->user_data = self;
 
         // Register a "Delete" event callback
-        lv_obj_add_event(lv_obj, mp_lv_delete_cb, LV_EVENT_DELETE, NULL);
+        //lv_obj_add_event(lv_obj, mp_lv_delete_cb, LV_EVENT_DELETE, NULL);
     }
     return MP_OBJ_FROM_PTR(self);
 }
@@ -2377,11 +2377,14 @@ def build_mp_func_arg(arg, index, func, obj_name):
                     full_user_data = '&MP_STATE_PORT(mp_lv_user_data)'
                 else:
                     if user_data:
-                        full_user_data = '&%s->%s' % (first_arg.name, user_data)
+                        if get_type(first_arg.type, remove_quals=True) == 'uint16_t':
+                            full_user_data = 'NULL'
+                        else:
+                            full_user_data = '&%s->%s' % (first_arg.name, user_data)
                     elif user_data_getter and user_data_setter:
                         full_user_data = 'NULL' # uses getter/setter instead
                     if index == 0:
-                       raise MissingConversionException("Callback argument '%s' cannot be the first argument! We assume the first argument contains the user_data" % gen.visit(arg))
+                        raise MissingConversionException("Callback argument '%s' cannot be the first argument! We assume the first argument contains the user_data" % gen.visit(arg))
                     if not full_user_data:
                         raise MissingConversionException("Callback function '%s' must receive a struct pointer with user_data member as its first argument!" % gen.visit(arg))
             # eprint("--> callback_metadata= %s_%s" % (struct_name, callback_name))

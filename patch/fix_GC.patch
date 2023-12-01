@@ -1,0 +1,16 @@
+diff --git a/src/core/lv_obj.c b/src/core/lv_obj.c
+index 8890fcbe0..48ab6fdc8 100644
+--- a/src/core/lv_obj.c
++++ b/src/core/lv_obj.c
+@@ -101,6 +101,11 @@ void lv_init(void)
+ 
+     LV_LOG_INFO("begin");
+ 
++    /*First initialize Garbage Collection if needed*/
++#ifdef LV_GC_INIT
++    LV_GC_INIT();
++#endif
++
+     /*Initialize the misc modules*/
+     lv_mem_init();
+ 
