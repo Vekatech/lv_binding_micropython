@@ -764,7 +764,7 @@ GENMPY_UNUSED STATIC MP_DEFINE_CONST_OBJ_TYPE(
     MP_QSTR_function,
     MP_TYPE_FLAG_BINDS_SELF | MP_TYPE_FLAG_BUILTIN_FUN,
     call, lv_fun_builtin_var_call,
-    unary_op, mp_generic_unary_op,
+    //unary_op, mp_generic_unary_op,
     buffer, mp_func_get_buffer
 );
 
@@ -773,7 +773,7 @@ GENMPY_UNUSED STATIC MP_DEFINE_CONST_OBJ_TYPE(
     MP_QSTR_function,
     MP_TYPE_FLAG_BUILTIN_FUN,
     call, lv_fun_builtin_var_call,
-    unary_op, mp_generic_unary_op,
+    //unary_op, mp_generic_unary_op,
     buffer, mp_func_get_buffer
 );
 
@@ -2377,11 +2377,11 @@ def build_mp_func_arg(arg, index, func, obj_name):
                     full_user_data = '&MP_STATE_PORT(mp_lv_user_data)'
                 else:
                     if user_data:
-                        full_user_data = '&%s->%s' % (first_arg.name, user_data)
+                            full_user_data = '&%s->%s' % (first_arg.name, user_data)
                     elif user_data_getter and user_data_setter:
                         full_user_data = 'NULL' # uses getter/setter instead
                     if index == 0:
-                       raise MissingConversionException("Callback argument '%s' cannot be the first argument! We assume the first argument contains the user_data" % gen.visit(arg))
+                        raise MissingConversionException("Callback argument '%s' cannot be the first argument! We assume the first argument contains the user_data" % gen.visit(arg))
                     if not full_user_data:
                         raise MissingConversionException("Callback function '%s' must receive a struct pointer with user_data member as its first argument!" % gen.visit(arg))
             # eprint("--> callback_metadata= %s_%s" % (struct_name, callback_name))
